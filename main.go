@@ -20,6 +20,16 @@ func main() {
 		return
 	}
 
+	todoRepository := todo.NewPostgreSQLRepository(db)
+
+	/* Aggiungere dati da peristere nel context */
+	r.Use(func(c *gin.Context) {
+		c.Set("repository", todoRepository)
+		c.Next()
+	})
+
+	todo.SetupRoutes(r)
+
 	serverAddress := fmt.Sprintf(":%d", serverConfig.ServerPort)
 	r.Run(serverAddress)
 }
